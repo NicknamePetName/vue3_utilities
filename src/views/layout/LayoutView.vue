@@ -5,10 +5,10 @@
         <img src="https://github.com/NicknamePetName/Photo/blob/main/source/yixin.jpg?raw=true" alt="亦忻" />
       </div>
       <div class="nav">
-        <div class="home" @click="tohome">主页</div>
-        <div class="student" @click="tostudent">学生信息</div>
-        <div class="teacher" @click="toteacher">教师信息</div>
-        <div class="statistics" @click="tostatistics">数据统计</div>
+        <div class="home" @click="tohome" :class="{ active: isActive1 }">主页</div>
+        <div class="student" @click="tostudent" :class="{ active: isActive2 }">学生信息</div>
+        <div class="teacher" @click="toteacher" :class="{ active: isActive3 }">教师信息</div>
+        <div class="statistics" @click="tostatistics" :class="{ active: isActive4 }">数据统计</div>
         <div class="login" @click="tologin">返回登录页面</div>
       </div>
     </nav>
@@ -23,23 +23,42 @@ export default {
   name: '#layout',
   data() {
     return {
-
+      isActive1:true,
+      isActive2:false,
+      isActive3:false,
+      isActive4:false,
     }
   },
   methods: {
     tohome: function () {
+      this.isActive1 = true;
+      this.isActive2 = false;
+      this.isActive3 = false;
+      this.isActive4 = false;
       router.push('/layout/home');
     },
     tostudent: function () {
+      this.isActive2 = true;
+      this.isActive1 = false;
+      this.isActive3 = false;
+      this.isActive4 = false;
       router.push('/layout/student');
     },
     toteacher: function () {
+      this.isActive3 = true;
+      this.isActive2 = false;
+      this.isActive1 = false;
+      this.isActive4 = false;
       router.push('/layout/teacher');
     },
     tologin: function () {
       router.push('/');
     },
     tostatistics: function() {
+      this.isActive4 = true;
+      this.isActive2 = false;
+      this.isActive3 = false;
+      this.isActive1 = false;
       router.push('/layout/statistics');
     }
   }
@@ -88,5 +107,12 @@ nav {
 
   }
 
+}
+</style>
+
+<style>
+.active {
+  background-color:aquamarine;
+  color: red !important;
 }
 </style>

@@ -28,6 +28,7 @@
           <li style="width: 60%">
             <div class="box" style="height: 570px">
               <div class="tit">实时数据</div>
+              <div id="container" style="height: 100%;margin-top: -20px;"></div>
             </div>
           </li>
           <li style="width: 20%">
@@ -54,20 +55,30 @@ export default {
 }
 </script> -->
 <script>
+import * as echarts from "echarts";
 export default {
   data() {
     return {
       formattedTime: "", // 用于存储格式化后的时间字符串
-      timer: null // 定时器对象
+      timer: null, // 定时器对象
+      myChart: null,
+      chartData: [
+        [1, 2, 3, 4, 3, 5, 1],
+        [2, 4, 6, 1, 3, 2, 1],
+        [1, 2, 3, 4, 1, 2, 5],
+      ],
     };
   },
   mounted() {
     // 在组件挂载后开始更新时间
     this.startTimer();
+    this.initChart();
+    window.addEventListener("resize", this.resizeChart);
   },
   beforeDestroy() {
     // 在组件销毁前清除定时器，防止内存泄漏
     this.stopTimer();
+    window.removeEventListener("resize", this.resizeChart);
   },
   methods: {
     updateTime() {
@@ -89,21 +100,82 @@ export default {
     stopTimer() {
       // 停止定时器
       clearInterval(this.timer);
-    }
-  }
+    },
+    initChart() {
+      this.myChart = echarts.init(document.getElementById("container"), null, {
+        renderer: "canvas",
+        useDirtyRect: false,
+      });
+      this.setChartOption();
+    },
+    setChartOption() {
+      const option = {
+        angleAxis: {
+          type: "category",
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        },
+        radiusAxis: {},
+        polar: {},
+        series: [
+          {
+            type: "bar",
+            data: this.chartData[0],
+            coordinateSystem: "polar",
+            // name: 'A',
+            stack: "a",
+            emphasis: {
+              focus: "series",
+            },
+          },
+          {
+            type: "bar",
+            data: this.chartData[1],
+            coordinateSystem: "polar",
+            // name: 'B',
+            stack: "a",
+            emphasis: {
+              focus: "series",
+            },
+          },
+          {
+            type: "bar",
+            data: this.chartData[2],
+            coordinateSystem: "polar",
+            // name: 'C',
+            stack: "a",
+            emphasis: {
+              focus: "series",
+            },
+          },
+        ],
+        legend: {
+          show: true,
+          data: ["A", "B", "C"],
+        },
+      };
+      if (option && typeof option === "object") {
+        this.myChart.setOption(option);
+      }
+    },
+    resizeChart() {
+      if (this.myChart) {
+        this.myChart.resize();
+      }
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 #statistics {
-    width: 1200px;
-    position: fixed;
-    left: 360px;
-    top: 40px;
-    color: #fff;
-    font-size: 16px;
-    background: #033c76 url(../images/beijing.png) no-repeat center;
-    background-size: 100% 100%;
+  width: 1200px;
+  position: fixed;
+  left: 360px;
+  top: 40px;
+  color: #fff;
+  font-size: 16px;
+  background: #033c76 url(../images/beijing.png) no-repeat center;
+  background-size: 100% 100%;
   /* CSS Document */
   * {
     -webkit-box-sizing: border-box;
@@ -117,7 +189,6 @@ export default {
     margin: 0px;
     font-family: "微软雅黑";
   }
-
 
   html,
   body {
